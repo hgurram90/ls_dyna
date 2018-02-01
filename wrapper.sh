@@ -15,7 +15,8 @@ echo "running on node $NODE_HOSTNAME"
 ## experiment for vncpasswords
 VNCP='${AGAVE_JOB_ID}'
 #VNCPO=`/scratch/00849/tg458981/vncp $VNCP`
-VNCPO=`echo $VNCP | vncpasswd -f > $HOME/.vnc/$VNCP.pwd` 
+echo $VNCP > $HOME/.vnc/$VNCP.txt
+VNCPO=`vncpasswd -f < $HOME/.vnc/$VNCP.txt > $HOME/.vnc/$VNCP.pwd` 
 
 # VNC server executable
 VNCSERVER_BIN=`which vncserver`
