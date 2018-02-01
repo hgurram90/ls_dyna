@@ -15,7 +15,9 @@ echo "running on node $NODE_HOSTNAME"
 ## experiment for vncpasswords
 VNCP='${AGAVE_JOB_ID}'
 #VNCPO=`/scratch/00849/tg458981/vncp $VNCP`
-VNCPO=`echo $VNCP | vncpasswd -f > $HOME/.vnc/$VNCP.pwd` 
+mkdir -p $HOME/.vnc/
+echo $VNCP > $HOME/.vnc/$VNCP.txt
+ VNCPO=`vncpasswd -f < $HOME/.vnc/$VNCP.txt > $HOME/.vnc/$VNCP.pwd`
 
 # VNC server executable
 VNCSERVER_BIN=`which vncserver`
@@ -32,7 +34,8 @@ WAYNESS=`echo $PE | perl -pe 's/([0-9]+)way/\1/;'`
 echo "set wayness to $WAYNESS"
 
 # launch VNC session with the session password set to the agave job id
-VNC_DISPLAY=`$VNCSERVER_BIN -geometry 1280x800 -rfbauth $HOME/.vnc/$VNCP.pwd $@ 2>&1 | grep desktop | awk -F: '{print $3}'` 
+$VNCSERVER_BIN -geometry 1280x800 -rfbauth $HOME/.vnc/$VNCP.pwd $@ 2>&1 > $HOME/.vnc/$AGAVE_JOB_ID_job.log
+VNC_DISPLAY=`cat $HOME/.vnc/$AGAVE_JOB_ID_job.log | grep desktop | awk -F: '{print $3}'` 
 #VNC_DISPLAY=`$VNCSERVER_BIN -geometry 1280x800 -rfbauth vncp.txt $@ 2>&1 | grep desktop | awk -F: '{print $3}'`
 echo "got VNC display :$VNC_DISPLAY"
 
